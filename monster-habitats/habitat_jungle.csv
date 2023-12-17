@@ -1,0 +1,54 @@
+Name,Size,Type,Tags,Alignment,Challenge,XP,Source
+Baboon,Small,Beast,,Unaligned,0,10,mm 318
+Lizard,Tiny,Beast,,Unaligned,0,10,mm 332
+Spider,Tiny,Beast,,Unaligned,0,10,mm 337
+Flying Snake,Tiny,Beast,,Unaligned,1/8,25,mm 322
+Poisonous Snake,Tiny,Beast,,Unaligned,1/8,25,mm 334
+Stirge,Tiny,Beast,,Unaligned,1/8,25,mm 284
+Tribal Warrior,Medium,Humanoid,,,1/8,25,mm 350
+Axe Beak,Large,Beast,,Unaligned,1/4,50,mm 317
+Constrictor Snake,Large,Beast,,Unaligned,1/4,50,mm 320
+Giant Frog,Medium,Beast,,Unaligned,1/4,50,mm 325
+Giant Lizard,Large,Beast,,Unaligned,1/4,50,mm 326
+Giant Poisonous Snake,Medium,Beast,,Unaligned,1/4,50,mm 327
+Goblin,Small,Humanoid,goblinoid,NE,1/4,50,mm 166
+Grung,Small,Humanoid,grung,LE,1/4,50,vgm 156
+Hadrosaurus,Large,Beast,,Unaligned,1/4,50,vgm 140
+Pteranodon,Medium,Beast,,Unaligned,1/4,50,mm 80
+Swarm of Bats,Medium,Beast,,Unaligned,1/4,50,mm 337
+Vegepygmy,Small,Plant,,N,1/4,50,vgm 196
+Velociraptor,Tiny,Beast,,Unaligned,1/4,50,vgm 140
+Zombie,Medium,Undead,,NE,1/4,50,mm 316
+Ape,Medium,Beast,,Unaligned,1/2,100,mm 317
+Giant Wasp,Medium,Beast,,Unaligned,1/2,100,mm 329
+Lizardfolk,Medium,Humanoid,lizardfolk,N,1/2,100,mm 204
+Scout,Medium,Humanoid,,,1/2,100,mm 349
+Swarm of Insects,Medium,Beast,,Unaligned,1/2,100,mm 338
+Deinonychus,Medium,Beast,,Unaligned,1,200,vgm 139
+Ghoul,Medium,Undead,,CE,1,200,mm 148
+Yuan-ti Pureblood,Medium,Humanoid,yuan-ti,NE,1,200,mm 310
+Allosaurus,Large,Beast,,Unaligned,2,450,mm 79
+Giant Boar,Large,Beast,,Unaligned,2,450,mm 323
+Giant Constrictor Snake,Huge,Beast,,Unaligned,2,450,mm 324
+Swarm of Poisonous Snakes,Medium,Beast,,Unaligned,2,450,mm 338
+Yuan-ti Broodguard,Medium,Humanoid,yuan-ti,NE,2,450,vgm 203
+Ankylosaurus,Huge,Beast,,Unaligned,3,700,mm 79
+Flail Snail,Large,Elemental,,Unaligned,3,700,vgm 144
+Giant Scorpion,Large,Beast,,Unaligned,3,700,mm 327
+Yuan-ti Malison,Medium,Monstrosity,"shapechanger, yuan-ti",NE,3,700,mm 309
+Girallon,Large,Monstrosity,,Unaligned,4,1100,vgm 152
+Stegosaurus,Huge,Beast,,Unaligned,4,1100,vgm 140
+Wereboar,Medium,Humanoid,"human, shapechanger",NE,4,1100,mm 209
+Weretiger,Medium,Humanoid,"human, shapechanger",N,4,1100,mm 210
+Yuan-ti Mind Whisperer,Medium,Monstrosity,"shapechanger, yuan-ti",NE,4,1100,vgm 204
+Yuan-ti Nightmare Speaker,Medium,Monstrosity,"shapechanger, yuan-ti",NE,4,1100,vgm 205
+Brontosaurus,Gargantuan,Beast,,Unaligned,5,1800,vgm 139
+Night Hag,Medium,Fiend,,NE,5,1800,mm 178
+Triceratops,Huge,Beast,,Unaligned,5,1800,mm 80
+Troll,Large,Giant,,CE,5,1800,mm 291
+Yuan-ti Pit Master,Medium,Monstrosity,"shapechanger, yuan-ti",NE,5,1800,vgm 206
+Cyclops,Huge,Giant,,CN,6,2300,mm 45
+Giant Ape,Huge,Beast,,Unaligned,7,2900,mm 323
+Yuan-ti Abomination,Large,Monstrosity,"shapechanger, yuan-ti",NE,7,2900,mm 308
+Tyrannosaurus Rex,Huge,Beast,,Unaligned,8,3900,mm 80
+Yuan-ti Anathema,Huge,Monstrosity,"shapechanger, yuan-ti",NE,12,8400,vgm 202
