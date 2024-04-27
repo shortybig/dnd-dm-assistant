@@ -341,5 +341,3 @@ currently_planned <- sapply(written_level_files, readr::read_csv, simplify = FAL
     levels = paste0(sapply(strsplit(file, "_"), `[`, 2), "-", stringr::str_remove(sapply(strsplit(file, "_"), `[`, 4), ".csv"))
   ) |> 
   dplyr::select(-file)
-
-# sandbox -----------------------------------------------------------------
