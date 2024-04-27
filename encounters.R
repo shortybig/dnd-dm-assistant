@@ -330,7 +330,7 @@ encounter_diff_xp <- function (current_level, party_size, monster_count,
 }
 
 # written_levels ----------------------------------------------------------
-
+# should probably revisit and delete
 written_level_files <- list.files("dnd/", pattern = "level_*", full.names = TRUE)
 
 currently_planned <- sapply(written_level_files, readr::read_csv, simplify = FALSE) |> 
