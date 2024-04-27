@@ -21,15 +21,26 @@ monster_list <- sapply(habitat_files, readr::read_csv, simplify = FALSE) |>
   dplyr::mutate(
     habitat = stringr::str_remove_all(sapply(strsplit(habitat_file, "_"), '[', 2), ".csv"),
     Challenge = dplyr::case_when(
+<<<<<<< HEAD
     Challenge == "1/8" ~ "0.125",
     Challenge == "1/4" ~ "0.25", 
     Challenge == "1/2" ~ "0.5",
     TRUE ~ Challenge
+=======
+      Challenge == "1/8" ~ "0.125",
+      Challenge == "1/4" ~ "0.25", 
+      Challenge == "1/2" ~ "0.5",
+      TRUE ~ Challenge
+>>>>>>> eb8a72c70905f85f419127828343b71942fc86a1
     )
   ) |> 
   dplyr::mutate(
     Challenge = as.numeric(Challenge)
+<<<<<<< HEAD
     ) |> 
+=======
+  ) |> 
+>>>>>>> eb8a72c70905f85f419127828343b71942fc86a1
   dplyr::select(Name, habitat, xp, Challenge, Author)
 
 possible_habitats <- unique(monster_list$habitat)
@@ -40,15 +51,26 @@ level_up <- data.frame(current_level = c(1:20),
                          120000,140000,165000,195000,225000,265000,305000,355000)) |> 
   dplyr::mutate(
     xp_next = dplyr::lead(min_xp) - min_xp
+<<<<<<< HEAD
     ) |> 
   dplyr::mutate(
     xp_party = xp_next * party_size
     )
+=======
+  ) |> 
+  dplyr::mutate(
+    xp_party = xp_next * party_size
+  )
+>>>>>>> eb8a72c70905f85f419127828343b71942fc86a1
 
 difficulty <- data.frame(rating = c("easy", "medium", "hard", "deadly")) |> 
   dplyr::mutate(
     times_chance = c(2, 3, 2, 1)
+<<<<<<< HEAD
     )
+=======
+  )
+>>>>>>> eb8a72c70905f85f419127828343b71942fc86a1
 
 xp_thresholds <- data.frame(level = c(1:20), 
                             easy = c(
@@ -74,21 +96,34 @@ multiplier_df <-
       monsters <= 10 & monsters >= 7 ~ 2.5, 
       monsters <= 14 & monsters >= 11 ~ 3,
       TRUE ~ 4
+<<<<<<< HEAD
       )
     ) |> 
+=======
+    )
+  ) |> 
+>>>>>>> eb8a72c70905f85f419127828343b71942fc86a1
   dplyr::mutate(
     times_chance = c(rep(9, times=2),
                      rep(7, times=3),
                      rep(4, times=2),
                      rep(3, times=2),
                      rep(1, times=6))
+<<<<<<< HEAD
     ) %>%
+=======
+  ) %>%
+>>>>>>> eb8a72c70905f85f419127828343b71942fc86a1
   {as.data.frame(lapply(., rep, .$times_chance))}
 
 difficulty <- as.data.frame(lapply(difficulty, rep, difficulty$times_chance))
 
 # functions ---------------------------------------------------------------
+<<<<<<< HEAD
 level_encounter <- function (desired_level, party_size, initial_start_xp = NULL, unique_difficulties = NULL, drive_folder) {
+=======
+level_encounter <- function (desired_level, party_size = getOption("party_size"), initial_start_xp = NULL, unique_difficulties = NULL, drive_folder = getOption("drive_folder")) {
+>>>>>>> eb8a72c70905f85f419127828343b71942fc86a1
   
   current_level <<- desired_level - 1
   desired_level <<- desired_level
@@ -98,8 +133,9 @@ level_encounter <- function (desired_level, party_size, initial_start_xp = NULL,
   } else {
     difficulties <- unique_difficulties
   }
-    
+  
   repeat {
+<<<<<<< HEAD
   
   if (is.null(initial_start_xp)) {
     start_xp <- level_up[which(level_up$current_level == current_level),]$min_xp
@@ -122,6 +158,30 @@ level_encounter <- function (desired_level, party_size, initial_start_xp = NULL,
   
   
   xp_remaining <- xp_next
+=======
+    
+    if (is.null(initial_start_xp)) {
+      start_xp <- level_up[which(level_up$current_level==current_level),]$min_xp
+      
+      xp_next <- 
+        level_up[which(level_up$current_level==current_level),]$xp_party 
+    } else {
+      start_xp <- initial_start_xp
+      
+      xp_next <- 
+        level_up[which(level_up$current_level==current_level),]$xp_party - 
+        start_xp
+    }
+    
+    encounter_table <- data.frame(start_xp=numeric(), 
+                                  difficulty_rating=character(),
+                                  number_monsters=numeric(),
+                                  encounter_xp=numeric(),
+                                  remain_xp=numeric()) 
+    
+    
+    xp_remaining <- xp_next
+>>>>>>> eb8a72c70905f85f419127828343b71942fc86a1
     
     while (xp_remaining > 0) {
       
@@ -160,22 +220,35 @@ level_encounter <- function (desired_level, party_size, initial_start_xp = NULL,
       print(encounter_table)
     }
     
-  start_xp <- initial_start_xp
-  
-  if (difficulty_test == difficulties) {
+    start_xp <- initial_start_xp
+    
+    if (difficulty_test == difficulties) {
       break
     }
   } 
   
+<<<<<<< HEAD
   potential_num_quests <- ifelse(nrow(encounter_table) <= 8, 4, 5)
+=======
+  potential_num_quests <- dplyr::case_when(
+    nrow(encounter_table) <= 8 ~ 4, 
+    TRUE ~ 5)
+>>>>>>> eb8a72c70905f85f419127828343b71942fc86a1
   
   encounter_table <- encounter_table |> 
     dplyr::mutate(
       quests = sort(sample(1:potential_num_quests, nrow(encounter_table), replace = TRUE))
+<<<<<<< HEAD
       ) |> 
     dplyr::mutate(
       quests = dense_rank(quests)
       ) |> 
+=======
+    ) |> 
+    dplyr::mutate(
+      quests = dense_rank(quests)
+    ) |> 
+>>>>>>> eb8a72c70905f85f419127828343b71942fc86a1
     dplyr::rename(
       "start_xp" = paste0("Individual XP, Level ", current_level),
       "difficulty_rating" = "Difficulty Rating",
@@ -198,8 +271,13 @@ level_encounter <- function (desired_level, party_size, initial_start_xp = NULL,
 }
 
 # stopped here
+<<<<<<< HEAD
 random_encounter <- function (current_level, party_size, my_habitat = c("forest"), 
                               monsters = NULL, diff_rate = NULL) {
+=======
+random_encounter <- function (current_level, party_size=4, my_habitat=c("forest"), 
+                              monsters=NULL, diff_rate=NULL) {
+>>>>>>> eb8a72c70905f85f419127828343b71942fc86a1
   random_encounter_table <- data.frame(current_level = numeric(),
                                        difficulty_rating = character(),
                                        number_monsters = numeric(), 
