@@ -42,7 +42,7 @@ level_up <- data.frame(current_level = c(1:20),
     xp_next = dplyr::lead(min_xp) - min_xp
     ) |> 
   dplyr::mutate(
-    xp_party = xp_next * party_size
+    xp_party = xp_next * getOption("party_size")
     )
 
 difficulty <- data.frame(rating = c("easy", "medium", "hard", "deadly")) |> 
@@ -210,7 +210,8 @@ random_encounter <- function (current_level, party_size, my_habitat = c("forest"
   } 
   
   if (diff_rate == "easy") {
-    multiplier_df_adj <- multiplier_df |> 
+    multiplier_df_adj <- 
+      multiplier_df |> 
       dplyr::filter(monsters <= 5)
   } else {
     multiplier_df_adj <- multiplier_df
