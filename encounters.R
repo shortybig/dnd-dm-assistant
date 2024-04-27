@@ -197,7 +197,6 @@ level_encounter <- function (desired_level, party_size, initial_start_xp = NULL,
   print(encounter_table)
 }
 
-# stopped here
 random_encounter <- function (current_level, party_size, my_habitat = c("forest"), 
                               monsters = NULL, diff_rate = NULL) {
   random_encounter_table <- data.frame(current_level = numeric(),
@@ -211,8 +210,8 @@ random_encounter <- function (current_level, party_size, my_habitat = c("forest"
   } 
   
   if (diff_rate == "easy") {
-    multiplier_df_adj <- multiplier_df %>% 
-      filter(monsters <= 5)
+    multiplier_df_adj <- multiplier_df |> 
+      dplyr::filter(monsters <= 5)
   } else {
     multiplier_df_adj <- multiplier_df
   }
@@ -229,56 +228,63 @@ random_encounter <- function (current_level, party_size, my_habitat = c("forest"
                                               current_level), 
                                       diff_rate]) * party_size
   
-  encounter_mult <- multiplier_df %>% 
-    group_by(monsters) %>% 
-    slice_head() %>% 
-    {.[which(.$monsters==monster_count),]$multiplier}
+  encounter_mult <- 
+    multiplier_df |> 
+    dplyr::group_by(monsters) |> 
+    dplyr::slice_head() %>%
+    {.[which(.$monsters == monster_count),]$multiplier}
   
   xp_nonadj <- encounter_xp_base/encounter_mult
   
-  monster_list_adj <- monster_list %>% 
-    filter(xp <= xp_nonadj) %>% 
-    filter(habitat %in% my_habitat) %>% 
-    group_by(Name) %>% 
-    slice_head() %>% 
-    ungroup()
+  monster_list_adj <- 
+    monster_list |> 
+    dplyr::filter(xp <= xp_nonadj) |> 
+    dplyr::filter(habitat %in% my_habitat) |> 
+    dplyr::group_by(Name) |> 
+    dplyr::slice_head() |> 
+    dplyr::ungroup()
   
   sum_xp <- 0
   
   if (diff_rate != "deadly") {
-    while (sum_xp > xp_nonadj*1.5 | sum_xp < xp_nonadj) {
-      attempt <- sample(monster_list_adj$Name, monster_count, replace = F)
+    while (sum_xp > xp_nonadj * 1.5 | sum_xp < xp_nonadj) {
+      attempt <- sample(monster_list_adj$Name, monster_count, replace = FALSE)
       
-      sum_xp <- monster_list_adj %>% 
-        filter(Name %in% attempt) %>% 
+      sum_xp <- 
+        monster_list_adj |> 
+        dplyr::filter(Name %in% attempt) %>% 
         {sum(.$xp)}
       
       print(sum_xp)
     }
   } else {
-    while (sum_xp > xp_nonadj*1.25 | sum_xp < xp_nonadj) {
-      attempt <- sample(monster_list_adj$Name, monster_count, replace = F)
+    while (sum_xp > xp_nonadj * 1.25 | sum_xp < xp_nonadj) {
+      attempt <- sample(monster_list_adj$Name, monster_count, replace = FALSE)
       
-      sum_xp <- monster_list_adj %>% 
-        filter(Name %in% attempt) %>% 
+      sum_xp <- 
+        monster_list_adj |> 
+        dplyr::filter(Name %in% attempt) %>% 
         {sum(.$xp)}
       
       print(sum_xp)
     }
   }
   
-  encounter_monster_table <- monster_list_adj %>% 
-    filter(Name %in% attempt) %>% 
-    subset(select = c(Name, xp, Challenge, habitat)) 
+  encounter_monster_table <- 
+    monster_list_adj |> 
+    dplyr::filter(Name %in% attempt) |> 
+    dplyr::select(Name, xp, Challenge, habitat)
   
   random_encounter_row <- data.frame(current_level, 
                                      difficulty_rating = diff_rate, 
                                      number_monsters = monster_count, 
-                                     encounter_xp = sum(encounter_monster_table$xp)*encounter_mult) %>% 
-    mutate(ind_xp = ceiling(encounter_xp/party_size))
+                                     encounter_xp = sum(encounter_monster_table$xp) * encounter_mult) |> 
+    dplyr::mutate(
+      ind_xp = ceiling(encounter_xp/party_size)
+      )
   
-  random_encounter_table <- bind_rows(random_encounter_table, 
-                                      random_encounter_row)
+  random_encounter_table <- 
+    dplyr::bind_rows(random_encounter_table, random_encounter_row)
   
   random_encounter_table <<- random_encounter_table
   
@@ -289,42 +295,50 @@ random_encounter <- function (current_level, party_size, my_habitat = c("forest"
   print(encounter_monster_table)
 }
 
-encounter_diff_xp <- function (current_level, party_size=4, monster_count, 
+encounter_diff_xp <- function (current_level, party_size, monster_count, 
                                unadj_xp) {
   
-  xp_thresholds_adj <- xp_thresholds %>% 
-    filter(level == current_level)
+  xp_thresholds_adj <- 
+    xp_thresholds |> 
+    dplyr::filter(level == current_level)
   
-  encounter_mult <- multiplier_df %>% 
-    group_by(monsters) %>% 
-    slice_head() %>% 
+  encounter_mult <- 
+    multiplier_df |> 
+    dplyr::group_by(monsters) |> 
+    dplyr::slice_head() %>% 
     {.[which(.$monsters==monster_count),]$multiplier}
   
-  xp_adj_ind <- encounter_mult*unadj_xp/party_size
+  xp_adj_ind <- encounter_mult * unadj_xp/party_size
   
-  diff_rating <- xp_thresholds_adj %>% 
-    pivot_longer(cols = c("easy", "medium", "hard", "deadly"), 
-                 names_to = "difficulty", values_to = "xp") %>% 
-    filter(xp <= xp_adj_ind) %>% 
-    filter(xp == max(xp)) %>% 
-    rename("xp_threshold" = "xp") %>% 
-    mutate(xp_adj_ind) %>% 
-    mutate(extremity = case_when(
-      difficulty=="deadly" & xp_adj_ind>1.2*xp_threshold ~ "too deadly", 
-      difficulty=="easy" & xp_adj_ind<0.8*xp_threshold ~ "too easy", 
-      T ~ "feasible"))
+  diff_rating <- 
+    xp_thresholds_adj |>  
+    tidyr::pivot_longer(
+      cols = c("easy", "medium", "hard", "deadly"), 
+      names_to = "difficulty", values_to = "xp"
+      ) |> 
+    dplyr::filter(xp <= xp_adj_ind) |> 
+    dplyr::filter(xp == max(xp)) |> 
+    dplyr::rename("xp_threshold" = "xp") |> 
+    # I think the line below is a mistake
+    # dplyr::mutate(xp_adj_ind) |> 
+    dplyr::mutate(extremity = case_when(
+      difficulty == "deadly" & xp_adj_ind > 1.2 * xp_threshold ~ "too deadly", 
+      difficulty == "easy" & xp_adj_ind < 0.8 * xp_threshold ~ "too easy", 
+      TRUE ~ "feasible")
+      )
   
   print(diff_rating)
 }
 
 # written_levels ----------------------------------------------------------
 
-written_level_files <- list.files("dnd/", pattern = "level_*", full.names = T)
+written_level_files <- list.files("dnd/", pattern = "level_*", full.names = TRUE)
 
-currently_planned <- sapply(written_level_files, read_csv, simplify = F) %>% 
-  bind_rows(.id = "file") %>% 
-  mutate(
-    levels = str_c(sapply(strsplit(file, "_"), `[`, 2), "-", str_remove(sapply(strsplit(file, "_"), `[`, 4), ".csv"))
-  ) %>% 
-  select(c(-file))
+currently_planned <- sapply(written_level_files, readr::read_csv, simplify = FALSE) |> 
+  dplyr::bind_rows(.id = "file") |> 
+  dplyr::mutate(
+    levels = paste0(sapply(strsplit(file, "_"), `[`, 2), "-", stringr::str_remove(sapply(strsplit(file, "_"), `[`, 4), ".csv"))
+  ) |> 
+  dplyr::select(c(-file))
+
 # sandbox -----------------------------------------------------------------
