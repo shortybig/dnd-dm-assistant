@@ -2,6 +2,8 @@ library(tidyverse)
 library(googledrive)
 
 # files -------------------------------------------------------------------
+# these files came from elsewhere online as googlesheets and I downloaded them as CSVs.
+# they provide the monster, habitat, xp, and challenge rating
 habitat_files <- list.files(path = "monster-habitats", pattern = "habitat", full.names = TRUE) 
 
 # setup -------------------------------------------------------------------
@@ -307,4 +309,5 @@ currently_planned <- sapply(written_level_files, read_csv, simplify = F) %>%
     levels = str_c(sapply(strsplit(file, "_"), `[`, 2), "-", str_remove(sapply(strsplit(file, "_"), `[`, 4), ".csv"))
   ) %>% 
   select(c(-file))
+
 # sandbox -----------------------------------------------------------------
