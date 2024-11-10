@@ -320,7 +320,7 @@ encounter_diff_xp <- function (current_level, party_size, monster_count,
     dplyr::filter(xp <= xp_adj_ind) |> 
     dplyr::filter(xp == max(xp)) |> 
     dplyr::rename("xp_threshold" = "xp") |> 
-    dplyr::mutate(extremity = case_when(
+    dplyr::mutate(extremity = dplyr::case_when(
       difficulty == "deadly" & xp_adj_ind > 1.2 * xp_threshold ~ "too deadly", 
       difficulty == "easy" & xp_adj_ind < 0.8 * xp_threshold ~ "too easy", 
       TRUE ~ "feasible")
