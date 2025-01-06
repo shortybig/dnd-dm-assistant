@@ -123,8 +123,7 @@ level_encounter <- function (desired_level, party_size, initial_start_xp = NULL,
       start_xp <- initial_start_xp
       
       xp_next <- 
-        level_up[which(level_up$current_level == current_level),]$xp_party - 
-        start_xp
+        level_up[which(level_up$current_level == current_level),]$xp_party - start_xp
       
     }
     
@@ -146,7 +145,8 @@ level_encounter <- function (desired_level, party_size, initial_start_xp = NULL,
       
       if (diff_rate == "easy") {
         
-        multiplier_df_adj <- multiplier_df |> 
+        multiplier_df_adj <- 
+          multiplier_df |> 
           dplyr::filter(monsters <= 5)
         
       } else {
@@ -156,8 +156,7 @@ level_encounter <- function (desired_level, party_size, initial_start_xp = NULL,
       }
       
       monster_count <- 
-        multiplier_df_adj[which(multiplier_df_adj$monsters == sample(multiplier_df_adj$monsters, 1)
-        ),]$monsters[1]
+        multiplier_df_adj[which(multiplier_df_adj$monsters == sample(multiplier_df_adj$monsters, 1)),]$monsters[1]
       
       encounter_xp <- 
         (xp_thresholds[which(xp_thresholds$level == current_level), diff_rate]) * party_size
@@ -204,7 +203,7 @@ level_encounter <- function (desired_level, party_size, initial_start_xp = NULL,
       quests = sort(sample(1:potential_num_quests, nrow(encounter_table), replace = TRUE))
     ) |> 
     dplyr::mutate(
-      quests = dense_rank(quests)
+      quests = dplyr::dense_rank(quests)
     ) |> 
     dplyr::rename(
       "start_xp" = paste0("Individual XP, Level ", current_level),
@@ -221,7 +220,7 @@ level_encounter <- function (desired_level, party_size, initial_start_xp = NULL,
   
   readr::write_csv(encounter_table, file = level_table)
   
-  googledrive::drive_rm(substr(level_table, 3, nchar(level_table)-4))
+  googledrive::drive_rm(substr(level_table, 3, nchar(level_table) - 4))
   googledrive::drive_upload(media = level_table, path = drive_folder, type = "spreadsheet")
   
   print(encounter_table)
