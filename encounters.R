@@ -93,7 +93,7 @@ difficulty <-
   as.data.frame(lapply(difficulty, rep, difficulty$times_chance))
 
 # functions ---------------------------------------------------------------
-level_encounter <- function (desired_level, party_size, initial_start_xp = NULL, unique_difficulties = NULL, drive_folder) {
+level_encounter <- function (desired_level, party_size, initial_start_xp = NULL, unique_difficulties = NULL, max_number_of_monsters = NULL, drive_sheet) {
   
   current_level <<- desired_level - 1
   
@@ -151,7 +151,18 @@ level_encounter <- function (desired_level, party_size, initial_start_xp = NULL,
         
       } else {
         
-        multiplier_df_adj <- multiplier_df
+        if (!is.null(max_number_of_monsters)) {
+          
+          multiplier_df_adj <- 
+            multiplier_df |> 
+            dplyr::filter(monsters <= max_number_of_monsters)
+          
+        } else {
+          
+          multiplier_df_adj <- 
+            multiplier_df
+          
+        }
         
       }
       
@@ -195,7 +206,7 @@ level_encounter <- function (desired_level, party_size, initial_start_xp = NULL,
     
   } 
   
-  potential_num_quests <- ifelse(nrow(encounter_table) <= 8, 4, 5)
+  potential_num_quests <- ifelse(nrow(encounter_table) <= 8, sample(x = 2:4, size = 1), sample(x = 5:7, size = 1))
   
   encounter_table <- 
     encounter_table |> 
@@ -204,31 +215,31 @@ level_encounter <- function (desired_level, party_size, initial_start_xp = NULL,
     ) |> 
     dplyr::mutate(
       quests = dplyr::dense_rank(quests)
-    ) |> 
-    dplyr::rename(
-      "start_xp" = paste0("Individual XP, Level ", current_level),
-      "difficulty_rating" = "Difficulty Rating",
-      "number_monsters" = "Number of Monsters",
-      "encounter_xp" = "Total Encounter XP",
-      "remain_xp" = paste0("Remaining Party XP until ", desired_level),
-      "quests" = "Quest Breakdown"
     )
   
+  colnames(encounter_table) <- 
+    c(
+      paste0("Individual XP, Level ", current_level),
+      "Difficulty Rating",
+      "Number of Monsters",
+      "Total Encounter XP",
+      paste0("Remaining Party XP until ", desired_level),
+      "Quest Breakdown"
+    )
+  
+  googlesheets4::sheet_write(
+    encounter_table,
+    ss = drive_sheet,
+    sheet = paste0(current_level, "_to_", desired_level)
+  )
+  
   encounter_table_view <<- encounter_table
-  
-  level_table <- paste0("./level_", current_level, "_to_", desired_level,".csv")
-  
-  readr::write_csv(encounter_table, file = level_table)
-  
-  googledrive::drive_rm(substr(level_table, 3, nchar(level_table) - 4))
-  googledrive::drive_upload(media = level_table, path = drive_folder, type = "spreadsheet")
   
   print(encounter_table)
   
 }
 
-random_encounter <- function (current_level, party_size, my_habitat = c("forest"), 
-                              monsters = NULL, diff_rate = NULL) {
+random_encounter <- function (current_level, party_size, my_habitat = c("forest"), monsters = NULL, diff_rate = NULL) {
   
   random_encounter_table <- 
     data.frame(
