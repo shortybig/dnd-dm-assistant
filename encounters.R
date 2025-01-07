@@ -93,7 +93,7 @@ difficulty <-
   as.data.frame(lapply(difficulty, rep, difficulty$times_chance))
 
 # functions ---------------------------------------------------------------
-level_encounter <- function (desired_level, party_size, initial_start_xp = NULL, unique_difficulties = NULL, max_number_of_monsters = NULL, drive_sheet) {
+level_up_encounters <- function (desired_level, party_size, initial_start_xp = NULL, unique_difficulties = NULL, max_number_of_monsters = NULL, drive_sheet) {
   
   current_level <<- desired_level - 1
   
@@ -132,6 +132,7 @@ level_encounter <- function (desired_level, party_size, initial_start_xp = NULL,
         start_xp = numeric(), 
         difficulty_rating = character(),
         number_monsters = numeric(),
+        unadjusted_xp = numeric(),
         encounter_xp = numeric(),
         remain_xp = numeric()
       ) 
@@ -169,6 +170,9 @@ level_encounter <- function (desired_level, party_size, initial_start_xp = NULL,
       monster_count <- 
         multiplier_df_adj[which(multiplier_df_adj$monsters == sample(multiplier_df_adj$monsters, 1)),]$monsters[1]
       
+      unadjusted_xp_row <- 
+        round((xp_thresholds[which(xp_thresholds$level == current_level), diff_rate] * party_size) / unique(multiplier_df[which(multiplier_df$monsters == monster_count),]$multiplier), 0)
+      
       encounter_xp <- 
         (xp_thresholds[which(xp_thresholds$level == current_level), diff_rate]) * party_size
       
@@ -181,6 +185,7 @@ level_encounter <- function (desired_level, party_size, initial_start_xp = NULL,
           start_xp = start_xp, 
           difficulty_rating = diff_rate,
           number_monsters = monster_count,
+          unadjusted_xp = unadjusted_xp_row,
           encounter_xp = encounter_xp,
           remain_xp = xp_remaining
         )
@@ -222,6 +227,7 @@ level_encounter <- function (desired_level, party_size, initial_start_xp = NULL,
       paste0("Individual XP, Level ", current_level),
       "Difficulty Rating",
       "Number of Monsters",
+      "Unadjusted Encounter XP",
       "Total Encounter XP",
       paste0("Remaining Party XP until ", desired_level),
       "Quest Breakdown"
