@@ -397,15 +397,3 @@ encounter_diff_xp <- function (current_level, party_size, monster_count,
   print(diff_rating)
   
 }
-
-# written_levels ----------------------------------------------------------
-# should probably revisit and delete
-written_level_files <- list.files("dnd/", pattern = "level_*", full.names = TRUE)
-
-currently_planned <- 
-  sapply(written_level_files, readr::read_csv, simplify = FALSE) |> 
-  dplyr::bind_rows(.id = "file") |> 
-  dplyr::mutate(
-    levels = paste0(sapply(strsplit(file, "_"), `[`, 2), "-", stringr::str_remove(sapply(strsplit(file, "_"), `[`, 4), ".csv"))
-  ) |> 
-  dplyr::select(-file)
